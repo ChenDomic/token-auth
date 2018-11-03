@@ -50,7 +50,7 @@ class Token
     public function __construct($info = '', $salt = '')
     {
 
-        if ($info) {
+        if (!$info) {
             return;
         }
         //设置info签名信息
@@ -62,7 +62,7 @@ class Token
         $this->generateToken();
     }
     /**
-     * @deprecated 设置盐值
+     *
      * @param mixed $salt
      */
     public function setSalt($salt)
@@ -111,6 +111,9 @@ class Token
      */
     public function validate($info, $token, $salt)
     {
+        //赋值
+        $this->setInfo($info);
+        $this->setSalt($salt);
         //生成的验证信息
         $this->generateToken();
 
@@ -131,9 +134,9 @@ class Token
         }
 
         //获取salt
-        $this->salt = empty($salt) ?  $this->generateSalt() : $salt;
+        $this->salt OR $this->generateSalt();
         // 生成token
-        $this->token = md5($info . $salt);
+        $this->token = md5($info . $this->salt);
         $this->sign = ['salt' => $this->salt, 'token' => $this->token];
     }
 
@@ -154,7 +157,7 @@ class Token
     }
     /**
      * 生成盐值，为了生成复杂度
-     * @return string 验证
+     * @return void
      */
     private function generateSalt()
     {
@@ -162,7 +165,7 @@ class Token
         //拼接初始字符串
         $salt = $this->getLetter() . $this->getSymbol();
         // 生成salt值并返回
-        return str_shuffle($salt) . time();
+        $this->salt = str_shuffle($salt) . time();
     }
 
     /**

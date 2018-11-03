@@ -1,5 +1,5 @@
-##这是个生成Token的类
-###使用的方法
+##这是个生成和验证Token的类
+###生成token
 方法一
 ```
 $demo = new Token($info[,$salt]);//$info{array|string}
@@ -15,4 +15,9 @@ $demo->setSalt($salt);
 $token = $demo->getToken();
 $salt = $demo->getSalt();
 $sign = $demo->getSign();//返回token 和 salt的关联数组;
+```
+###验证token
+```
+$demo = new Token;
+$demo->validate($info, $token, $salt); //true : 正确， false : 错误
 ```
